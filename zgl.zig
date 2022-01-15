@@ -1238,6 +1238,17 @@ pub fn blendFuncSeparate(srcRGB: BlendFactor, dstRGB: BlendFactor, srcAlpha: Ble
     checkError();
 }
 
+pub const DrawMode = enum(types.Enum) {
+    point = c.GL_POINT,
+    line = c.GL_LINE,
+    fill = c.GL_FILL,
+};
+
+pub fn polygonMode(face: CullMode, mode: DrawMode) void {
+    c.glPolygonMode(@enumToInt(face),  @enumToInt(mode));
+    checkError();
+}
+
 pub fn polygonOffset(factor: f32, units: f32) void {
     c.glPolygonOffset(factor, units);
     checkError();
@@ -1896,6 +1907,7 @@ pub const Parameter = enum(types.Enum) {
     point_size = c.GL_POINT_SIZE,
     point_size_granularity = c.GL_POINT_SIZE_GRANULARITY,
     point_size_range = c.GL_POINT_SIZE_RANGE,
+    polygon_mode = c.GL_POLYGON_MODE,
     polygon_offset_factor = c.GL_POLYGON_OFFSET_FACTOR,
     polygon_offset_fill = c.GL_POLYGON_OFFSET_FILL,
     polygon_offset_line = c.GL_POLYGON_OFFSET_LINE,
@@ -1983,6 +1995,9 @@ pub const StringParameter = enum(types.Enum) {
 
 pub fn getStringi(parameter: StringParameter, index: u32) ?[:0]const u8 {
     return std.mem.span(c.glGetStringi(@enumToInt(parameter), index));
+}
+pub fn getString(parameter: StringParameter) ?[:0]const u8 {
+    return std.mem.span(c.glGetString(@enumToInt(parameter)));
 }
 
 pub fn hasExtension(extension: [:0]const u8) bool {
